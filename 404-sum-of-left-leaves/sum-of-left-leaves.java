@@ -4,14 +4,18 @@ class Solution {
 
         int sum = 0;
         if (root.left != null) {
-            if (root.left.left == null && root.left.right == null) {
+            if (isLeaf(root.left)) {
                 sum += root.left.val;
-            } else {
-                sum += sumOfLeftLeaves(root.left);
             }
         }
+
+        sum += sumOfLeftLeaves(root.left);
         sum += sumOfLeftLeaves(root.right);
 
         return sum;
+    }
+    public boolean isLeaf(TreeNode node) {
+        if (node == null) return false;
+        return node.left == null && node.right == null;
     }
 }
