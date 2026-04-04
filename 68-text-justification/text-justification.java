@@ -1,45 +1,56 @@
 import java.util.*;
+import java.util.regex.*;
 
 class Solution {
     public List<String> fullJustify(String[] words, int maxWidth) {
-        List<String> res = new ArrayList<>();
-        int i = 0;
+        List<List<String>> lines = new ArrayList<>();
+        findLines(words, 0, maxWidth, lines);
         
-        while (i < words.length) {
-            int lineLength = words[i].length();
-            int last = i + 1;
-            
-            while (last < words.length && lineLength + 1 + words[last].length() <= maxWidth) {
-                lineLength += 1 + words[last].length();
-                last++;
-            }
-            
-            StringBuilder sb = new StringBuilder();
-            int numWords = last - i;
-            
-            if (last == words.length || numWords == 1) {
-                for (int j = i; j < last; j++) {
-                    sb.append(words[j]);
-                    if (j < last - 1) sb.append(" ");
-                }
-                while (sb.length() < maxWidth) sb.append(" ");
-            } else {
-                int totalSpaces = maxWidth - (lineLength - (numWords - 1));
-                int spaceBetween = totalSpaces / (numWords - 1);
-                int extraSpaces = totalSpaces % (numWords - 1);
-                
-                for (int j = i; j < last - 1; j++) {
-                    sb.append(words[j]);
-                    int spacesToApply = spaceBetween + (j - i < extraSpaces ? 1 : 0);
-                    for (int s = 0; s < spacesToApply; s++) sb.append(" ");
-                }
-                sb.append(words[last - 1]);
-            }
-            
-            res.add(sb.toString());
-            i = last;
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < lines.size(); i++) {
+            result.add(formatLine(lines.get(i), maxWidth, i == lines.size() - 1));
+        }
+        return result;
+    }
+
+    private void findLines(String[] words, int index, int maxWidth, List<List<String>> lines) {
+        if (index >= words.length) return;
+
+        List<String> currentLine = new ArrayList<>();
+        int currentLength = 0;
+
+        while (index < words.length && currentLength + words[index].length() + currentLine.size() <= maxWidth) {
+            currentLength += words[index].length();
+            currentLine.add(words[index]);
+            index++;
         }
         
-        return res;
+        lines.add(currentLine);
+        findLines(words, index, maxWidth, lines);
+    }
+
+    private String formatLine(List<String> line, int maxWidth, boolean isLast) {
+        if (line.size() == 1 || isLast) {
+            String joined = String.join(" ", line);
+            return String.format("%-" + maxWidth + "s", joined);
+        }
+
+        int totalChars = 0;
+        for (String w : line) totalChars += w.length();
+        
+        int totalSpaces = maxWidth - totalChars;
+        int gapCount = line.size() - 1;
+        int spacePerGap = totalSpaces / gapCount;
+        int extraSpaces = totalSpaces % gapCount;
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < line.size(); i++) {
+            sb.append(line.get(i));
+            if (i < gapCount) {
+                int spacesToAppend = spacePerGap + (i < extraSpaces ? 1 : 0);
+                sb.append(" ".repeat(spacesToAppend));
+            }
+        }
+        return sb.toString();
     }
 }
