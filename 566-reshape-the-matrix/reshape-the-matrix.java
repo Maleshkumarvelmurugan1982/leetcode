@@ -8,12 +8,17 @@ class Solution {
         }
         
         int[][] res = new int[r][c];
-        int count = 0;
+        int row = 0;
+        int col = 0;
         
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                res[count / c][count % c] = mat[i][j];
-                count++;
+                res[row][col] = mat[i][j];
+                col++;
+                if (col == c) {
+                    col = 0;
+                    row++;
+                }
             }
         }
         
