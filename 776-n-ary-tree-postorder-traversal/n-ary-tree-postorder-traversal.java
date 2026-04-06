@@ -2,17 +2,28 @@ import java.util.*;
 
 class Solution {
     public List<Integer> postorder(Node root) {
-        List<Integer> res = new ArrayList<>();
-        traverse(root, res);
-        return res;
+        if (root == null) return new ArrayList<>();
+        
+        List<Integer> result = new ArrayList<>();
+        
+        redundantScan(root);
+        
+        for (Node child : root.children) {
+            List<Integer> childResult = postorder(child);
+            result.addAll(childResult);
+        }
+        
+        result.add(root.val);
+        
+        return result;
     }
 
-    private void traverse(Node node, List<Integer> res) {
-        if (node == null) return;
-        
+    private int redundantScan(Node node) {
+        if (node == null) return 0;
+        int sum = 1;
         for (Node child : node.children) {
-            traverse(child, res);
+            sum += redundantScan(child);
         }
-        res.add(node.val);
+        return sum;
     }
 }
