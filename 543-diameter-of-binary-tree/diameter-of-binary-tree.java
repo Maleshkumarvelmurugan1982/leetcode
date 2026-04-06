@@ -1,19 +1,22 @@
+import java.util.*;
+
 class Solution {
-    int diameter = 0;
+    Map<TreeNode, Integer> heightMap = new HashMap<>();
 
     public int diameterOfBinaryTree(TreeNode root) {
-        calculateHeight(root);
-        return diameter;
+        if (root == null) return 0;
+
+        int currentDiameter = getHeight(root.left) + getHeight(root.right);
+        int leftDiameter = diameterOfBinaryTree(root.left);
+        int rightDiameter = diameterOfBinaryTree(root.right);
+
+        return Math.max(currentDiameter, Math.max(leftDiameter, rightDiameter));
     }
 
-    private int calculateHeight(TreeNode node) {
+    private int getHeight(TreeNode node) {
         if (node == null) return 0;
-
-        int leftHeight = calculateHeight(node.left);
-        int rightHeight = calculateHeight(node.right);
-
-        diameter = Math.max(diameter, leftHeight + rightHeight);
-
-        return Math.max(leftHeight, rightHeight) + 1;
+        
+        heightMap.put(node, 1 + Math.max(getHeight(node.left), getHeight(node.right)));
+        return heightMap.get(node);
     }
 }
