@@ -1,37 +1,34 @@
 class Solution {
     public int findShortestSubArray(int[] nums) {
+        HashMap<Integer, Integer> count = new HashMap<>();
         HashMap<Integer, Integer> firstIndex = new HashMap<>();
         HashMap<Integer, Integer> lastIndex = new HashMap<>();
-        HashMap<Integer, Integer> count = new HashMap<>();
         
         for (int i = 0; i < nums.length; i++) {
-            count.put(nums[i], count.getOrDefault(nums[i], 0) + 1);
-        }
-        
-        for (int i = 0; i < nums.length; i++) {
-            if (!firstIndex.containsKey(nums[i])) {
-                firstIndex.put(nums[i], i);
+            int num = nums[i];
+            
+            count.put(num, count.getOrDefault(num, 0) + 1);
+            
+            if (!firstIndex.containsKey(num)) {
+                firstIndex.put(num, i);
             }
+            
+            lastIndex.put(num, i);
         }
         
-        for (int i = nums.length - 1; i >= 0; i--) {
-            if (!lastIndex.containsKey(nums[i])) {
-                lastIndex.put(nums[i], i);
-            }
-        }
-        
-        int maxFreq = 0;
+        int maxDegree = 0;
         for (int freq : count.values()) {
-            maxFreq = Math.max(maxFreq, freq);
+            maxDegree = Math.max(maxDegree, freq);
         }
         
-        int minLen = Integer.MAX_VALUE;
+        int minLength = Integer.MAX_VALUE;
         for (int num : count.keySet()) {
-            if (count.get(num) == maxFreq) {
-                int len = lastIndex.get(num) - firstIndex.get(num) + 1;
-                minLen = Math.min(minLen, len);
+            if (count.get(num) == maxDegree) {
+                int length = lastIndex.get(num) - firstIndex.get(num) + 1;
+                minLength = Math.min(minLength, length);
             }
         }
-        return minLen;
+        
+        return minLength;
     }
 }
