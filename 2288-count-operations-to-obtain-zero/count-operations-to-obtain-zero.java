@@ -4,7 +4,6 @@ class Solution {
         while (n1 > 0 && n2 > 0) {
             c += n1 / n2;
             n1 %= n2;
-            // swap num1 and num2
             int temp = n1;
             n1 = n2;
             n2 = temp;
