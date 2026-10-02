@@ -1,34 +1,19 @@
-import java.util.*;
-
 class Solution {
+    List<String> res = new ArrayList<>();
     public List<String> generateParenthesis(int n) {
-        List<String> result = new ArrayList<>();
-        generate("", 2 * n, result);
-        return result;
+        if (n-- == 1) return List.of("()");
+        dfs(n, n, "(");
+        return res;
     }
-
-    private void generate(String current, int length, List<String> result) {
-        if (current.length() == length) {
-            if (isValid(current)) {
-                result.add(current);
-            }
+    private void dfs(int O, int C, String s) {
+        if (O == 0 && C == 0) {
+            res.add(s + ")");
             return;
         }
+        if (O > 0)
+            dfs(O - 1, C, s + "(");
 
-        generate(current + "(", length, result);
-        generate(current + ")", length, result);
-    }
-
-    private boolean isValid(String s) {
-        int count = 0;
-
-        for (char c : s.toCharArray()) {
-            if (c == '(') count++;
-            else count--;
-
-            if (count < 0) return false;
-        }
-
-        return count == 0;
+        if (C >= O)
+            dfs(O, C - 1, s + ")");
     }
 }
